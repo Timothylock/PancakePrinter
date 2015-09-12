@@ -6,6 +6,7 @@ import javax.swing.text.*;
 import java.net.*;
 import java.awt.Cursor.*;
 import java.awt.image.*; 
+import java.util.*;
 
 public class PancakePrinter implements ActionListener, MouseListener, MouseMotionListener{
  //////////////////////////////////
@@ -15,7 +16,6 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  // Main window
  JFrame mainWindow;
  DrawingPanel mainPanel;   // Make Drawing Panel
- Timer frameTimer;
 
  // Drawing panel components
  JButton pencilButton;
@@ -26,9 +26,13 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  JButton lightShadeButton;
  JButton darkShadeButton;
  JButton finishButton;
+ 
+ // Menu
+ JMenuBar menuBar;
 
  // Variables
- String[] drawData = {""};
+ ArrayList<String> drawDataDark = new ArrayList<String>();
+ ArrayList<String> drawDataLight = new ArrayList<String>();
  int currentShade = 0;
 
  //////////////////////////
@@ -36,9 +40,13 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  //////////////////////////
  public void actionPerformed(ActionEvent evt){
      if(evt.getSource() == clearButton){  // Clear the Screen
-       // CLEAR THE SCREEN
-       drawData = null; // Clear the data storage
-       System.out.println("clearing screen + score");
+       mainPanel.plotX = -100;
+       mainPanel.plotY = -100;  // Move position off screen then reset
+       mainPanel.reset = true;
+       mainPanel.repaint();
+       drawDataLight.clear(); // Clear the data storage
+       drawDataDark.clear(); // Clear the data storage
+       System.out.println("clearing screen + data");
      }else if(evt.getSource() == lightShadeButton){
        currentShade = 1;
        System.out.println("setting shading to light");
@@ -49,10 +57,23 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        // SEND DATA TO ARDUINO
        System.out.println("sending data to Arduino");
        JOptionPane.showMessageDialog(mainWindow, "Arduino is now printing. PLACEFILLER FOR LIVE VIEW");
+       System.out.println(drawDataLight);
+       System.out.println(drawDataDark);
      }
  }
 
  public void mouseDragged(MouseEvent evt){
+   if ((evt.getX() >= 30 && evt.getX() <=475) && (evt.getY() >= 70 && evt.getY() <= 425)){
+     mainPanel.plotX = evt.getX();
+     mainPanel.plotY = evt.getY();
+     mainPanel.repaint(); // refresh the screen after plotting new points
+     if (currentShade == 2){
+       drawDataDark.add((evt.getX() + "|" + evt.getY() + "|" + currentShade));
+     }else if (currentShade == 1){
+       drawDataLight.add((evt.getX() + "|" + evt.getY() + "|" + currentShade));
+     }
+     System.out.println("mouse dragged " + evt.getX() + "x" + evt.getY());
+   }
  }
 
  public void mouseMoved(MouseEvent evt){
@@ -66,6 +87,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  }
    
  public void mousePressed(MouseEvent evt){
+   
  }
     
  public void mouseExited(MouseEvent evt){
@@ -84,13 +106,15 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   // Setup Main Window
   mainWindow = new JFrame("Pancake Printer");
   mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  mainWindow.setSize(800, 500);
+  mainWindow.setSize(760, 500);
   mainWindow.setResizable(false);
   mainWindow.setVisible(true);
   
   // Prestart Panel
   mainPanel = new DrawingPanel();
   mainPanel.setLayout(null);
+  mainPanel.addMouseListener(this);
+  mainPanel.addMouseMotionListener(this);
   
   // Setup the buttons
   pencilButton = new JButton("Pencil");

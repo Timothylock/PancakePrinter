@@ -8,7 +8,7 @@ import java.io.File;
 
 public class DrawingPanel extends JPanel{ 
   //properties
-  ImageIcon background = new ImageIcon(getClass().getResource("pictures/mainBackground.jpg"));
+  //ImageIcon background = new ImageIcon(getClass().getResource("pictures/mainBackground.jpg"));
   
   
   //Methods 
@@ -17,8 +17,9 @@ public class DrawingPanel extends JPanel{
     Graphics2D g2d = (Graphics2D)g; 
     g2d.setFont(new Font("Myriad Hebrew", Font.PLAIN, 25));
     g2d.setColor(Color.BLACK);
-    g2d.clearRect(0,0,1280,800);
-    background.paintIcon(this, g2d, 0, 0);
+    g2d.drawRect(30, 20, 50, 50);
+    //g2d.clearRect(0,0,1280,800);
+    //background.paintIcon(this, g2d, 0, 0);
   }
   
   //Constructors 
