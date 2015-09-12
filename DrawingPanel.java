@@ -6,10 +6,9 @@ import javax.imageio.*;
 import java.io.File; 
 
 
-
 public class DrawingPanel extends JPanel{ 
   //properties
-  ImageIcon background = new ImageIcon(getClass().getResource("pictures/mainBackground.jpg"));
+  //ImageIcon background = new ImageIcon(getClass().getResource("pictures/mainBackground.jpg"));
   
   
   //Methods 
@@ -19,7 +18,7 @@ public class DrawingPanel extends JPanel{
     g2d.setFont(new Font("Myriad Hebrew", Font.PLAIN, 25));
     g2d.setColor(Color.BLACK);
     g2d.clearRect(0,0,1280,800);
-    background.paintIcon(this, g2d, 0, 0);
+    //background.paintIcon(this, g2d, 0, 0);
   }
   
   //Constructors 

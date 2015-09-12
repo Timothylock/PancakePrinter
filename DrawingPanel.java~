@@ -6,8 +6,7 @@ import javax.imageio.*;
 import java.io.File; 
 
 
-
-public class drawingPanel extends JPanel{ 
+public class DrawingPanel extends JPanel{ 
   //properties
   ImageIcon background = new ImageIcon(getClass().getResource("pictures/mainBackground.jpg"));
   
@@ -23,7 +22,7 @@ public class drawingPanel extends JPanel{
   }
   
   //Constructors 
-  public drawingPanel(){ 
+  public DrawingPanel(){ 
     super();  
   }   
 }

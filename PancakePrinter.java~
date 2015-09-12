@@ -29,26 +29,15 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
 
  // Variables
  String[] drawData = {""};
- int currentShade = 0;
 
  //////////////////////////
  //   Action Listeners   //
  //////////////////////////
  public void actionPerformed(ActionEvent evt){
      if(evt.getSource() == clearButton){  // Clear the Screen
-       // CLEAR THE SCREEN
-       drawData = null; // Clear the data storage
-       System.out.println("clearing screen + score");
-     }else if(evt.getSource() == lightShadeButton){
-       currentShade = 1;
-       System.out.println("setting shading to light");
-     }else if(evt.getSource() == darkShadeButton){
-       currentShade = 2;
-       System.out.println("setting shading to dark");
-     }else if(evt.getSource() == finishButton){
-       // SEND DATA TO ARDUINO
-       System.out.println("sending data to Arduino");
-       JOptionPane.showMessageDialog(mainWindow, "Arduino is now printing. PLACEFILLER FOR LIVE VIEW");
+      // CLEAR THE SCREEN
+      drawData = null; // Clear the data storage
+      System.out.println("clearing screen + score");
      }
  }
 
@@ -114,14 +103,8 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   darkShadeButton = new JButton("Light Shade");
   darkShadeButton.addActionListener(this);
   darkShadeButton.setSize(220, 50);
-  darkShadeButton.setLocation(500, 260);
+  darkShadeButton.setLocation(500, 270);
   mainPanel.add(darkShadeButton);
-  
-  finishButton = new JButton("Send To Printer");
-  finishButton.addActionListener(this);
-  finishButton.setSize(220, 100);
-  finishButton.setLocation(500, 330);
-  mainPanel.add(finishButton);
   
   // Set the start Panel
   mainWindow.setContentPane(mainPanel);
