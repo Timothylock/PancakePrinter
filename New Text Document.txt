@@ -1,0 +1,2 @@
+String command = "cmd.exe /c start python path\to\script\script.py";
+Process p = Runtime.getRuntime().exec(command);

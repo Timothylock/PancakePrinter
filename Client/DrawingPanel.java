@@ -12,6 +12,7 @@ public class DrawingPanel extends JPanel{
   
   //Variables
   boolean reset = true;
+  boolean printing = false;
   int plotX = -100;
   int plotY = -100;
   int shade = 0;
@@ -29,6 +30,14 @@ public class DrawingPanel extends JPanel{
       background.paintIcon(this, g2d, 0, 0); // Background
       g2d.fillRect(30, 70, 450, 360);
       reset = false;
+    }
+    
+    if (printing == true){
+      g2d.clearRect(0,0,1280,800);
+      ImageIcon wait = new ImageIcon(getClass().getResource("images/progress.jpg"));
+      wait.paintIcon(this, g2d, 0, 0); // Background
+      g2d.fillRect(30, 70, 450, 360);
+      printing = false;
     }
     
     if (shade == 1){

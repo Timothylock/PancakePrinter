@@ -6,15 +6,7 @@ import javax.imageio.*;
 import java.io.File; 
 
 
-public class DrawingPanel extends JPanel{ 
-  //properties
-  
-  
-  //Variables
-  boolean reset = true;
-  int plotX = -100;
-  int plotY = -100;
-  int shade = 0;
+public class PrintingPanel extends JPanel{ 
   
   //Methods 
   //overides JPanel 
@@ -23,26 +15,16 @@ public class DrawingPanel extends JPanel{
     g2d.setFont(new Font("Myriad Hebrew", Font.PLAIN, 25));
     g2d.setColor(Color.WHITE);
     
-    if (reset == true){
       g2d.clearRect(0,0,1280,800);
-      ImageIcon background = new ImageIcon(getClass().getResource("images/background.jpg"));
+      ImageIcon background = new ImageIcon(getClass().getResource("images/progress.jpg"));
       background.paintIcon(this, g2d, 0, 0); // Background
       g2d.fillRect(30, 70, 450, 360);
-      reset = false;
-    }
     
-    if (shade == 1){
-      g2d.setColor(Color.GRAY);
-    }else{
-      g2d.setColor(Color.BLACK);
-    }
-    
-    g2d.fillOval(plotX, plotY, 6, 6);
     
   }
   
   //Constructors 
-  public DrawingPanel(){ 
+  public PrintingPanel(){ 
     super();  
   }   
 }

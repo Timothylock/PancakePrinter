@@ -7,6 +7,7 @@ import java.net.*;
 import java.awt.Cursor.*;
 import java.awt.image.*; 
 import java.util.*;
+import java.io.File;
 
 public class PancakePrinter implements ActionListener, MouseListener, MouseMotionListener{
  //////////////////////////////////
@@ -16,6 +17,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  // Main window
  JFrame mainWindow;
  DrawingPanel mainPanel;   // Make Drawing Panel
+ PrintingPanel printingPanel; // Printing Panel
 
  // Drawing panel components
  JButton pencilButton;
@@ -65,8 +67,25 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
          dataString += s + " ";
        }
        System.out.println(dataString);
-       SendToArduino.sendData(dataString);
-       JOptionPane.showMessageDialog(mainWindow, "Arduino is now printing. PLACEFILLER FOR LIVE VIEW");
+       try{
+         Process p = Runtime.getRuntime().exec("cmd.exe /c start python comm/ProcessAndSend.pyw " + "off."); // Use Python to comm
+       }catch (Exception e){
+         JOptionPane.showMessageDialog(mainWindow, "Error.");
+       }
+       mainPanel.printing = true;
+       mainPanel.repaint();
+       File varTmpDir = new File("finish.f");  // Check if its done by looking for a file. Then delete.
+       boolean exists = varTmpDir.exists();
+       while (exists == false){
+         varTmpDir = new File("finish.f");
+         exists = varTmpDir.exists();
+       }
+       System.out.println("done");
+       varTmpDir.delete();
+       mainPanel.reset = true;
+       mainPanel.repaint();
+       
+       
 
      }
  }
@@ -125,21 +144,16 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   mainWindow.setSize(760, 480);
   mainWindow.setResizable(false);
+  mainWindow.setAlwaysOnTop( true );
   mainWindow.setVisible(true);
   
-  // Prestart Panel
+  // Main Panel
   mainPanel = new DrawingPanel();
   mainPanel.setLayout(null);
   mainPanel.addMouseListener(this);
   mainPanel.addMouseMotionListener(this);
   
   // Setup the buttons
-  pencilButton = new JButton("Pencil");
-  pencilButton.addActionListener(this);
-  pencilButton.setSize(300, 50);
-  pencilButton.setLocation(400, 110);
-  //mainPanel.add(pencilButton);
-  
   clearButton = new JButton();
   clearButton.addActionListener(this);
   clearButton.setSize(220, 50);
@@ -179,6 +193,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   // Set the start Panel
   mainWindow.setContentPane(mainPanel);
   mainPanel.reset = true;
+  mainPanel.repaint();
   mainPanel.repaint();
  }
 

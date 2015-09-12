@@ -28,7 +28,7 @@ void loop() {
   moveX(-100);
   delay(100);
   pumpState(1);
-  resetMotors();
+
 }
 
 void moveY(int steps){
