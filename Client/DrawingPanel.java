@@ -8,12 +8,13 @@ import java.io.File;
 
 public class DrawingPanel extends JPanel{ 
   //properties
-  //ImageIcon background = new ImageIcon(getClass().getResource("pictures/mainBackground.jpg"));
+  
   
   //Variables
   boolean reset = true;
   int plotX = -100;
   int plotY = -100;
+  int shade = 0;
   
   //Methods 
   //overides JPanel 
@@ -24,13 +25,20 @@ public class DrawingPanel extends JPanel{
     
     if (reset == true){
       g2d.clearRect(0,0,1280,800);
+      ImageIcon background = new ImageIcon(getClass().getResource("images/background.jpg"));
+      background.paintIcon(this, g2d, 0, 0); // Background
       g2d.fillRect(30, 70, 450, 360);
       reset = false;
     }
     
-    g2d.setColor(Color.BLACK);
+    if (shade == 1){
+      g2d.setColor(Color.GRAY);
+    }else{
+      g2d.setColor(Color.BLACK);
+    }
+    
     g2d.fillOval(plotX, plotY, 6, 6);
-    //background.paintIcon(this, g2d, 0, 0);
+    
   }
   
   //Constructors 

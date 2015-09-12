@@ -33,6 +33,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  // Variables
  ArrayList<String> drawDataDark = new ArrayList<String>();
  ArrayList<String> drawDataLight = new ArrayList<String>();
+ String dataString = "";
  int currentShade = 0;
 
  //////////////////////////
@@ -56,14 +57,23 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
      }else if(evt.getSource() == finishButton){
        // SEND DATA TO ARDUINO
        System.out.println("sending data to Arduino");
+       dataString = ""; // Clear String
+       for (String s : drawDataDark){
+         dataString += s + " ";
+       }
+       for (String s : drawDataLight){
+         dataString += s + " ";
+       }
+       System.out.println(dataString);
+       SendToArduino.sendData(dataString);
        JOptionPane.showMessageDialog(mainWindow, "Arduino is now printing. PLACEFILLER FOR LIVE VIEW");
-       System.out.println(drawDataLight);
-       System.out.println(drawDataDark);
+
      }
  }
 
  public void mouseDragged(MouseEvent evt){
    if ((evt.getX() >= 30 && evt.getX() <=475) && (evt.getY() >= 70 && evt.getY() <= 425)){
+     mainPanel.shade = this.currentShade;
      mainPanel.plotX = evt.getX();
      mainPanel.plotY = evt.getY();
      mainPanel.repaint(); // refresh the screen after plotting new points
@@ -71,6 +81,13 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        drawDataDark.add((evt.getX() + "|" + evt.getY() + "|" + currentShade));
      }else if (currentShade == 1){
        drawDataLight.add((evt.getX() + "|" + evt.getY() + "|" + currentShade));
+     }else{
+       JOptionPane.showMessageDialog(mainWindow, "Please select a shade first!");
+       mainPanel.plotX = -100;
+       mainPanel.plotY = -100;  // Move position off screen then reset
+       mainPanel.reset = true;
+       mainPanel.repaint();
+       System.out.println("No shade selected");
      }
      System.out.println("mouse dragged " + evt.getX() + "x" + evt.getY());
    }
@@ -106,7 +123,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   // Setup Main Window
   mainWindow = new JFrame("Pancake Printer");
   mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  mainWindow.setSize(760, 500);
+  mainWindow.setSize(760, 480);
   mainWindow.setResizable(false);
   mainWindow.setVisible(true);
   
@@ -119,36 +136,50 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   // Setup the buttons
   pencilButton = new JButton("Pencil");
   pencilButton.addActionListener(this);
-  pencilButton.setSize(100, 100);
-  pencilButton.setLocation(500, 70);
-  mainPanel.add(pencilButton);
+  pencilButton.setSize(300, 50);
+  pencilButton.setLocation(400, 110);
+  //mainPanel.add(pencilButton);
   
-  clearButton = new JButton("Clear");
+  clearButton = new JButton();
   clearButton.addActionListener(this);
-  clearButton.setSize(100, 100);
-  clearButton.setLocation(620, 70);
+  clearButton.setSize(220, 50);
+  clearButton.setLocation(500, 107);
+  clearButton.setOpaque(false);
+  clearButton.setContentAreaFilled(false);
+  clearButton.setBorderPainted(false);
   mainPanel.add(clearButton);
   
-  lightShadeButton = new JButton("Light Shade");
+  lightShadeButton = new JButton();
   lightShadeButton.addActionListener(this);
-  lightShadeButton.setSize(220, 50);
-  lightShadeButton.setLocation(500, 200);
+  lightShadeButton.setSize(100, 50);
+  lightShadeButton.setLocation(500, 231);
+  lightShadeButton.setOpaque(false);
+  lightShadeButton.setContentAreaFilled(false);
+  lightShadeButton.setBorderPainted(false);
   mainPanel.add(lightShadeButton);
   
-  darkShadeButton = new JButton("Light Shade");
+  darkShadeButton = new JButton();
   darkShadeButton.addActionListener(this);
-  darkShadeButton.setSize(220, 50);
-  darkShadeButton.setLocation(500, 260);
+  darkShadeButton.setSize(100, 50);
+  darkShadeButton.setLocation(620, 231);
+  darkShadeButton.setOpaque(false);
+  darkShadeButton.setContentAreaFilled(false);
+  darkShadeButton.setBorderPainted(false);
   mainPanel.add(darkShadeButton);
   
-  finishButton = new JButton("Send To Printer");
+  finishButton = new JButton();
   finishButton.addActionListener(this);
   finishButton.setSize(220, 100);
   finishButton.setLocation(500, 330);
+  finishButton.setOpaque(false);
+  finishButton.setContentAreaFilled(false);
+  finishButton.setBorderPainted(false);
   mainPanel.add(finishButton);
   
   // Set the start Panel
   mainWindow.setContentPane(mainPanel);
+  mainPanel.reset = true;
+  mainPanel.repaint();
  }
 
  public static void main(String[] args){
