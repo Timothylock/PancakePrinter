@@ -1,5 +1,9 @@
+// Arduino motor and pump code
+// Created by: Bryan Wong and Timothy Lock
+// Date: 9th September 2015
+
+// --------------------------------------------------------------------------- Important variables
 String rawData = "";
-int count = 0;
 int storedX = 0;
 int storedY = 0;
 int power;
@@ -14,13 +18,14 @@ int step_delayY = 1;
 void setup() {
   Serial.begin(9600);
  
-  // Setup motors
+  // ------------------------------------------------------------------------- Setup motors
   int i;
   for(i = 0; i < 2; i++){
     pinMode(motorY[i], OUTPUT);
     pinMode(motorX[i], OUTPUT);
     pinMode(pump[i], OUTPUT);
 }
+  // ------------------------------------------------------------------------- Reset X conveyor
   moveX(-100);
   delay(1000);
   moveX(10);
@@ -30,42 +35,46 @@ void setup() {
 }
 
 void loop() {
-  // Collecting list data from serial monitor
+  // ------------------------------------------------------------------------- Collecting list data from serial monitor
   while (Serial.available()){
     delay (3);
     char c = Serial.read();
     rawData += c;
   }
-  Serial.println(rawData);
   
-  // Obtain values from the string sent
+  // -------------------------------------------------------------------------- Obtain values from the string sent
   if (rawData.length() > 0){
-    digitalWrite(13,HIGH);
+    if (rawData == "SWITCH"){
+      int xCoord = 0;
+      int yCoord = 0;
+      power = 0;
+    }
+    else{
     String a = rawData.substring(0,rawData.indexOf("|"));
     String b = rawData.substring(rawData.indexOf("|")+1,rawData.length()-2);
     String c = rawData.substring(rawData.length()-1);
     int xCoord = a.toInt();  
     int yCoord = b.toInt(); 
-    power = c.toInt(); 
-    Serial.println(power);
+    power = c.toInt();
+    } 
 
-  // 300 for the length, 100 for the width
+  // -------------------------------------------------------------------------- 250 for the length, 100 for the width
   int differenceX = xCoord - storedX;
   int differenceY = yCoord - storedY;
 
-  
+  // -------------------------------------------------------------------------- Motor movements
   moveX(differenceX);
   moveY(differenceY);
-  
 
-  // To get previous values to track location
+  // -------------------------------------------------------------------------- To get previous values to track location
   storedX = xCoord;
   storedY = yCoord;
   }
   
-  // For active pump or inactive pump
+  // -------------------------------------------------------------------------- For active pump or inactive pump
   pumpState(power);
-  // Clear data collected from serial
+  
+  // -------------------------------------------------------------------------- Clear data collected from serial
   rawData = "";
   delay(100);
 }
@@ -73,6 +82,8 @@ void loop() {
 void moveY(int steps){
   int i;
   int decreasing=0;
+
+  // --------------------------------------------------------------------------- Appropriate motor timings for Y
   if (steps >= 0){
     digitalWrite(motorY[0], LOW); 
     digitalWrite(motorY[1], HIGH); 
@@ -92,6 +103,8 @@ void moveY(int steps){
 void moveX(int steps){
   int i;
   int decreasing =0;
+
+  // ----------------------------------------------------------------------------- Appropriate motor timings for X
   if (steps >= 0){
     digitalWrite(motorX[0], LOW); 
     digitalWrite(motorX[1], HIGH);
@@ -112,6 +125,8 @@ void moveX(int steps){
 }
 
 void pumpState(int state){
+
+  // ----------------------------------------------------------------------------- Enabling pump motor
   if (state == 1){
     digitalWrite(pump[0], HIGH); 
     digitalWrite(pump[1], LOW); 
