@@ -6,6 +6,7 @@ import java.awt.Cursor.*;
 import java.awt.image.*; 
 import java.util.*;
 import java.io.File;
+import java.io.PrintWriter;
 
 public class PancakePrinter implements ActionListener, MouseListener, MouseMotionListener{
  //////////////////////////////////
@@ -67,15 +68,22 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        for (String s : drawDataLight){
          dataString += s + ",";
        }
-       System.out.println(dataString);
+       dataString = dataString.substring(0, dataString.length() - 1);
+       //System.out.println(dataString);
+       mainPanel.printing = true;
+       mainPanel.plotX = -100;
+       mainPanel.plotY = -100;  // Move position off screen then reset
+       mainPanel.repaint();
+       mainPanel.repaint();
        try{
-         Process p = Runtime.getRuntime().exec("cmd.exe /c start python comm/ProcessAndSend.py " + dataString); // Use Python to comm
+         PrintWriter writer = new PrintWriter("data.txt", "UTF-8");
+         writer.println(dataString);
+         writer.close();
+         Process p = Runtime.getRuntime().exec("cmd.exe /c start python comm/ProcessAndSend.py "); // Use Python to comm
          System.out.println(dataString);
        }catch (Exception e){
          JOptionPane.showMessageDialog(mainWindow, "Error.");
        }
-       mainPanel.printing = true;
-       mainPanel.repaint();
        File varTmpDir = new File("finish.f");  // Check if its done by looking for a file. Then delete.
        boolean exists = varTmpDir.exists();
        while (exists == false){
@@ -99,9 +107,9 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
      mainPanel.plotY = evt.getY();
      mainPanel.repaint(); // refresh the screen after plotting new points
      if (currentShade == 2){
-       drawDataDark.add((evt.getX() + "|" + evt.getY() + "|1"));
+       drawDataDark.add(((evt.getX()-30)*100/475 + "|" + (evt.getY() -70)*250/425 + "|1"));
      }else if (currentShade == 1){
-       drawDataLight.add((evt.getX() + "|" + evt.getY() + "|1"));
+       drawDataLight.add(((evt.getX()-30)*100/475 + "|" + (evt.getY()-70)*250/425 + "|1"));
      }else{
        JOptionPane.showMessageDialog(mainWindow, "Please select a shade first!");
        mainPanel.plotX = -100;
@@ -110,7 +118,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        mainPanel.repaint();
        System.out.println("No shade selected");
      }
-     System.out.println("mouse dragged " + evt.getX() + "x" + evt.getY());
+     System.out.println(((evt.getX()-30)*100/475 + "|" + (evt.getY()-70)*250/425 + "|1"));
    }
  }
 

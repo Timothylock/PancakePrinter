@@ -1,12 +1,12 @@
-import java.awt.*;
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.*;
 import java.awt.Font.*;
-import javax.swing.text.*;
-import java.net.*;
 import java.awt.Cursor.*;
 import java.awt.image.*; 
 import java.util.*;
+import java.io.File;
+import java.io.PrintWriter;
 
 public class PancakePrinter implements ActionListener, MouseListener, MouseMotionListener{
  //////////////////////////////////
@@ -14,8 +14,10 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  //////////////////////////////////
 
  // Main window
+ Timer frameTimer;
  JFrame mainWindow;
  DrawingPanel mainPanel;   // Make Drawing Panel
+ PrintingPanel printingPanel; // Printing Panel
 
  // Drawing panel components
  JButton pencilButton;
@@ -35,6 +37,7 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  ArrayList<String> drawDataLight = new ArrayList<String>();
  String dataString = "";
  int currentShade = 0;
+ int i;
 
  //////////////////////////
  //   Action Listeners   //
@@ -59,15 +62,38 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        System.out.println("sending data to Arduino");
        dataString = ""; // Clear String
        for (String s : drawDataDark){
-         dataString += s + " ";
+         dataString += s + ",";
        }
+       dataString += "SWITCH,";
        for (String s : drawDataLight){
-         dataString += s + " ";
+         dataString += s + ",";
        }
-       System.out.println(dataString);
-       //Process p = Runtime.getRuntime().exec("cmd.exe /c start python path\to\script\script.py"); // Use Python to comm
-       JOptionPane.showMessageDialog(mainWindow, "Arduino is now printing. PLACEFILLER FOR LIVE VIEW");
-
+       dataString = dataString.substring(0, dataString.length() - 1);
+       //System.out.println(dataString);
+       try{
+         PrintWriter writer = new PrintWriter("data.txt", "UTF-8");
+         writer.println(dataString);
+         writer.close();
+         Process p = Runtime.getRuntime().exec("cmd.exe /c start python comm/ProcessAndSend.py "); // Use Python to comm
+         System.out.println(dataString);
+       }catch (Exception e){
+         JOptionPane.showMessageDialog(mainWindow, "Error.");
+       }
+       mainPanel.printing = true;
+       mainPanel.repaint();
+       File varTmpDir = new File("finish.f");  // Check if its done by looking for a file. Then delete.
+       boolean exists = varTmpDir.exists();
+       while (exists == false){
+         varTmpDir = new File("finish.f");
+         exists = varTmpDir.exists();
+       }
+       System.out.println("done");
+       varTmpDir.delete();
+       mainPanel.reset = true;
+       mainPanel.repaint();
+     }
+     if (evt.getSource() == frameTimer){
+       mainPanel.repaint();
      }
  }
 
@@ -78,9 +104,9 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
      mainPanel.plotY = evt.getY();
      mainPanel.repaint(); // refresh the screen after plotting new points
      if (currentShade == 2){
-       drawDataDark.add((evt.getX() + "|" + evt.getY() + "|" + currentShade));
+       drawDataDark.add(((evt.getX()-30)*100/475 + "|" + (evt.getY() -70)*250/425 + "|1"));
      }else if (currentShade == 1){
-       drawDataLight.add((evt.getX() + "|" + evt.getY() + "|" + currentShade));
+       drawDataLight.add(((evt.getX()-30)*100/475 + "|" + (evt.getY()-70)*250/425 + "|1"));
      }else{
        JOptionPane.showMessageDialog(mainWindow, "Please select a shade first!");
        mainPanel.plotX = -100;
@@ -89,18 +115,11 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        mainPanel.repaint();
        System.out.println("No shade selected");
      }
-     System.out.println("mouse dragged " + evt.getX() + "x" + evt.getY());
+     System.out.println(((evt.getX()-30)*100/475 + "|" + (evt.getY()-70)*250/425 + "|1"));
    }
  }
 
  public void mouseMoved(MouseEvent evt){
-  /*
-  thePanel.crosshairX = evt.getX() - 25;
-  if(evt.getY() > 600){
-      thePanel.crosshairY =  600 - 25;
-  }else{
-      thePanel.crosshairY = evt.getY() - 25;
-     }*/
  }
    
  public void mousePressed(MouseEvent evt){
@@ -117,6 +136,16 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
  }
     
  public void mouseReleased(MouseEvent evt){
+   if (currentShade == 2){
+     for(i=drawDataDark.size() - 20; i<drawDataDark.size(); i++){
+       drawDataDark.set (i, drawDataDark.get(i).substring(0, drawDataDark.get(i).length() - 1) + "0");
+     }
+   }else if (currentShade == 1){
+     for(i=drawDataLight.size() - 20; i<drawDataLight.size(); i++){
+       drawDataLight.set (i, drawDataLight.get(i).substring(0, drawDataLight.get(i).length() - 1) + "0");
+     }
+   }
+   System.out.println("released");
  }
 
  public PancakePrinter(){
@@ -125,21 +154,16 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   mainWindow.setSize(760, 480);
   mainWindow.setResizable(false);
+  mainWindow.setAlwaysOnTop( true );
   mainWindow.setVisible(true);
   
-  // Prestart Panel
+  // Main Panel
   mainPanel = new DrawingPanel();
   mainPanel.setLayout(null);
   mainPanel.addMouseListener(this);
   mainPanel.addMouseMotionListener(this);
   
   // Setup the buttons
-  pencilButton = new JButton("Pencil");
-  pencilButton.addActionListener(this);
-  pencilButton.setSize(300, 50);
-  pencilButton.setLocation(400, 110);
-  //mainPanel.add(pencilButton);
-  
   clearButton = new JButton();
   clearButton.addActionListener(this);
   clearButton.setSize(220, 50);
@@ -180,6 +204,10 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
   mainWindow.setContentPane(mainPanel);
   mainPanel.reset = true;
   mainPanel.repaint();
+  mainPanel.repaint();
+  
+  frameTimer = new Timer(1, this);
+  frameTimer.start();
  }
 
  public static void main(String[] args){
