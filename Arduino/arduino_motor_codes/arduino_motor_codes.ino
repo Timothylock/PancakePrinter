@@ -11,7 +11,7 @@ int yCoord = 0;
 int power;
 
 // --------------------------------------------------------------------------- Motors
-int motorY[] = {13, 2};
+int motorY[] = {3, 2};
 int motorX[] = {5, 6};
 int pump[] = {10, 12};
 int step_delayY = 1;
@@ -28,7 +28,8 @@ void setup() {
     pinMode(pump[i], OUTPUT);
 }
   // ------------------------------------------------------------------------- Reset X conveyor
-  moveX(100);
+  moveX(-100);
+  moveY(-250);
   delay(1000);
   moveX(10);
   
@@ -55,9 +56,10 @@ void loop() {
     String a = rawData.substring(0,rawData.indexOf("|"));
     String b = rawData.substring(rawData.indexOf("|")+1,rawData.length()-2);
     String c = rawData.substring(rawData.length()-1);
-    int xCoord = a.toInt();  
-    int yCoord = b.toInt(); 
+    xCoord = a.toInt();  
+    yCoord = b.toInt(); 
     power = c.toInt();
+    
     } 
 
   // -------------------------------------------------------------------------- 250 for the length, 100 for the width
@@ -89,11 +91,15 @@ void moveY(int steps){
   if (steps >= 0){
     digitalWrite(motorY[0], LOW); 
     digitalWrite(motorY[1], HIGH); 
+   for(i = 0; i <= abs(steps); i++){
+      delay(step_delayY * 8 );}
   }else{
     digitalWrite(motorY[0], HIGH); 
     digitalWrite(motorY[1], LOW); 
+   for(i = 0; i <= abs(steps); i++){
+      delay(step_delayY * 8 );}
   }
-  delay(50);
+
   digitalWrite(motorY[0], LOW); 
   digitalWrite(motorY[1], LOW); 
 }
@@ -107,13 +113,12 @@ void moveX(int steps){
     digitalWrite(motorX[0], LOW); 
     digitalWrite(motorX[1], HIGH);
     for(i = 0; i <= abs(steps); i++){
-      delay(step_delayY - decreasing);
-      decreasing += 0; 
+      delay(step_delayY*2);
   }}else{
     digitalWrite(motorX[0], HIGH); 
     digitalWrite(motorX[1], LOW); 
     for(i = 0; i <= abs(steps); i++){
-      delay(step_delayY );
+      delay(step_delayY *2);
   }
 
 
