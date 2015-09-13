@@ -71,9 +71,6 @@ public class PancakePrinter implements ActionListener, MouseListener, MouseMotio
        dataString = dataString.substring(0, dataString.length() - 1);
        //System.out.println(dataString);
        mainPanel.printing = true;
-       mainPanel.plotX = -100;
-       mainPanel.plotY = -100;  // Move position off screen then reset
-       mainPanel.repaint();
        mainPanel.repaint();
        try{
          PrintWriter writer = new PrintWriter("data.txt", "UTF-8");

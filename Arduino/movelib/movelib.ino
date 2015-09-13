@@ -21,60 +21,94 @@ for(i = 0; i < 2; i++){
 
 // --------------------------------------------------------------------------- Loop
 void loop() { 
-  moveY(300);
-  moveX(100);
   delay(100);
-  moveY(-300);
-  moveX(-100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
   delay(100);
-  pumpState(1);
-
-}
-
-void moveY(int steps){
-  if (steps >= 0){
-    digitalWrite(motorY[0], HIGH); 
-    digitalWrite(motorY[1], LOW); 
-  }else{
-    digitalWrite(motorY[0], LOW); 
-    digitalWrite(motorY[1], HIGH); 
-  }
-  int i;
-  for(i = 0; i <= abs(steps); i++){
-    delay(step_delayY*5.8);
-  }
   digitalWrite(motorY[0], LOW); 
   digitalWrite(motorY[1], LOW); 
-}
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], HIGH); 
+  digitalWrite(motorY[1], LOW); 
+  delay(100);
+  digitalWrite(motorY[0], LOW); 
+  digitalWrite(motorY[1], LOW); 
 
-void moveX(int steps){
-  if (steps >= 0){
-    digitalWrite(motorX[0], HIGH); 
-    digitalWrite(motorX[1], LOW); 
-  }else{
-    digitalWrite(motorX[0], LOW); 
-    digitalWrite(motorX[1], HIGH); 
-  }
-  int i;
-  for(i = 0; i <= abs(steps); i++){
-    delay(step_delayY);
-  }
-  digitalWrite(motorX[0], LOW); 
+  digitalWrite(motorX[1], HIGH); 
+  digitalWrite(motorY[1], HIGH); 
+  delay(10);
   digitalWrite(motorX[1], LOW); 
-}
+  digitalWrite(motorY[1], LOW); 
+  delay(10);
+  digitalWrite(motorX[1], HIGH); 
+  digitalWrite(motorY[1], HIGH); 
+  delay(10);
+  digitalWrite(motorX[1], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(10);
+  digitalWrite(motorX[1], HIGH); 
+  digitalWrite(motorY[1], HIGH); 
+  delay(10);
+  digitalWrite(motorX[1], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(10);
+  digitalWrite(motorX[1], HIGH); 
+  digitalWrite(motorY[1], HIGH); 
+  delay(10);
+  digitalWrite(motorX[1], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(10);
+  digitalWrite(motorX[1], HIGH); 
+  digitalWrite(motorY[1], HIGH); 
+  delay(10);
+  digitalWrite(motorX[1], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(10);
+  digitalWrite(motorX[1], HIGH); 
+  digitalWrite(motorY[1], HIGH); 
+  delay(10);
+  digitalWrite(motorX[1], LOW); 
+  digitalWrite(motorY[1], LOW); 
+  delay(10);
+  
+  
 
-void resetMotors(){
-  moveX(500);
-  moveY(500);
+  
+  delay(1000000);
 }
-
-void pumpState(int state){
-  if (state == 1){
-    digitalWrite(pump[0], HIGH); 
-    digitalWrite(pump[1], LOW); 
-  }else{
-    digitalWrite(pump[0], LOW); 
-    digitalWrite(pump[1], LOW); 
-  }
-}
-
