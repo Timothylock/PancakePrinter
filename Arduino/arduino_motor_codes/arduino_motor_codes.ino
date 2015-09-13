@@ -6,10 +6,12 @@
 String rawData = "";
 int storedX = 0;
 int storedY = 0;
+int xCoord = 0;
+int yCoord = 0;
 int power;
 
 // --------------------------------------------------------------------------- Motors
-int motorY[] = {2, 3};
+int motorY[] = {13, 2};
 int motorX[] = {5, 6};
 int pump[] = {10, 12};
 int step_delayY = 1;
@@ -26,7 +28,7 @@ void setup() {
     pinMode(pump[i], OUTPUT);
 }
   // ------------------------------------------------------------------------- Reset X conveyor
-  moveX(-100);
+  moveX(100);
   delay(1000);
   moveX(10);
   
@@ -45,8 +47,8 @@ void loop() {
   // -------------------------------------------------------------------------- Obtain values from the string sent
   if (rawData.length() > 0){
     if (rawData == "SWITCH"){
-      int xCoord = 0;
-      int yCoord = 0;
+      xCoord = 0;
+      yCoord = 0;
       power = 0;
     }
     else{
@@ -87,15 +89,11 @@ void moveY(int steps){
   if (steps >= 0){
     digitalWrite(motorY[0], LOW); 
     digitalWrite(motorY[1], HIGH); 
-    for(i = 0; i <= abs(steps); i++){
-      delay(step_delayY*5.8 - decreasing);
-      decreasing += 0.5;}
   }else{
     digitalWrite(motorY[0], HIGH); 
     digitalWrite(motorY[1], LOW); 
-    for(i = 0; i <= abs(steps); i++){
-      delay(step_delayY*7);}
   }
+  delay(50);
   digitalWrite(motorY[0], LOW); 
   digitalWrite(motorY[1], LOW); 
 }
@@ -110,7 +108,7 @@ void moveX(int steps){
     digitalWrite(motorX[1], HIGH);
     for(i = 0; i <= abs(steps); i++){
       delay(step_delayY - decreasing);
-      decreasing += 0.1; 
+      decreasing += 0; 
   }}else{
     digitalWrite(motorX[0], HIGH); 
     digitalWrite(motorX[1], LOW); 
